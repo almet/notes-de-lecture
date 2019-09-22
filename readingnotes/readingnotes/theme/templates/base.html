@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    {% block head %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <title>{% block title %}Notes de lecture{% endblock title %}</title>
+    <link rel="stylesheet" href="/assets/css/poole.css"/>
+    <link rel="stylesheet" href="/assets/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="/assets/css/styles.css"/>
+    {% endblock head %}
+    {% block extrahead %}{% endblock %}
+  </head>
+
+  <body>
+    <div class="menubar"><a href="/">⮏ retour à la liste des lectures</a></div>
+    <div class="wrap">
+      <div class="{% block containerclass %}container{% endblock %} content">
+        {% block body %}{% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

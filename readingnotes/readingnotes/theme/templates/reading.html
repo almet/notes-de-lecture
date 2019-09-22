@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Notes de lecture sur {{ reading.title }}, de {{ reading.author }}{% endblock %}
+
+{% block extrahead %}
+<style>
+h1 {
+    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+    padding: 80px 50px;
+    text-align: center;
+    text-transform: uppercase;
+    text-rendering: optimizeLegibility;
+    color: #202020;
+    letter-spacing: .1em;
+    text-shadow:
+        -1px -1px 1px #111,
+        2px 2px 1px #eaeaea;
+}
+#main {
+    text-align: justify;
+    text-justify: inter-word;
+}
+#main h1 {
+    padding: 10px;
+}
+.post-headline {
+    padding: 15px;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="main" class="posts">
+<h1>{{ reading.title }} par {{ reading.author }}</h1>
+<h2>{{ reading.subtitle }}</h2>
+
+<span class="post-date">Lu le {{ reading.read_on }}. Thèmes : {{ ', '. join(reading.tags) }}. {% if reading.url %}<a href="{{ reading.url }}">Accéder au texte.</a>{% endif %}</span>
+{% if reading.image_url %}<img id="illustration" src="{{ reading.image_url }}" />{% endif %}
+
+
+<div class="post article">
+    {% if not reading.isbn %}<h1>🌟</h1>{% endif %}
+    <h2>Passages marquants :</h2>
+
+    {% for note in reading.notes %}
+        <blockquote>{{ note['note'] }}
+            <footer class="blockquote-footer">
+                {% for tag in note['tags'] %}
+                    <a href="/tags/{{tag}}.html">{{ tag }}</a>&nbsp;
+                {% endfor %}
+            </footer>
+        </blockquote>
+        
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Notes de lecture à propos de « {{ tag }} ».{% endblock %}
+
+{% block extrahead %}
+<style>
+h1 {
+    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+    padding: 80px 50px;
+    text-align: center;
+    text-transform: uppercase;
+    text-rendering: optimizeLegibility;
+    color: #202020;
+    letter-spacing: .1em;
+    text-shadow:
+        -1px -1px 1px #111,
+        2px 2px 1px #eaeaea;
+}
+#main {
+    text-align: justify;
+    text-justify: inter-word;
+}
+#main h1 {
+    padding: 10px;
+}
+.post-headline {
+    padding: 15px;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="main" class="posts">
+<h1>« {{ tag }} »</h1>
+
+<div class="post article">
+    {% for note in notes %}
+        <blockquote>{{ note['note'] }}
+            <footer class="blockquote-author">— {{ note['reading']['author']}}, <a href="/readings/{{note['reading'].slug}}.html">{{ note['reading']['title'] }}</a></footer>
+            <footer class="blockquote-footer">{{ ', '. join(note['tags']) }}</footer>
+        </blockquote>
+        
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Liste de mes notes de lecture{% endblock %}
+
+{% block containerclass %}container-wide{% endblock %}
+{% block containertitleclass %}container-wide{% endblock %}
+{% block body %}
+<div class="content-title">
+
+<div class="posts">
+  <h2>Liste de mes notes de lecture</h2>
+  <ul id="blog_index">
+        
+        {% for reading in readings %}
+            <li>
+                <span class="post">
+                    <a class="post_title" href="/readings/{{ reading.slug }}.html">
+                        {{ reading.title }}
+                    </a>
+                    <p class="author">{{ reading.author }}</p>
+                </span>
+                <span class="description">
+                    <span class="headline">{{ reading.subtitle }}</span>
+                    <span class="tags">
+                        {% for tag in reading.tags %}
+                            <a href="/tags/{{tag}}.html">{{ tag }}</a>&nbsp;
+                        {% endfor %}
+                    </span>
+                </span>
+            </li>
+        {% endfor %}
+
+  </ul>
+</div>
+{% endblock %}
