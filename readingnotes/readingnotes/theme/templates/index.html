@@ -14,17 +14,12 @@
             <li>
                 <span class="post">
                     <a class="post_title" href="/readings/{{ reading.slug }}.html">
-                        {{ reading.title }}
+                        {{ reading.title }} {% if reading.type != "book" %}({{ reading.type }}) {% endif %}
                     </a>
                     <p class="author">{{ reading.author }}</p>
                 </span>
                 <span class="description">
                     <span class="headline">{{ reading.subtitle }}</span>
-                    <span class="tags">
-                        {% for tag in reading.tags %}
-                            <a href="/tags/{{tag}}.html">{{ tag }}</a>&nbsp;
-                        {% endfor %}
-                    </span>
                 </span>
             </li>
         {% endfor %}

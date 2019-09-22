@@ -10,8 +10,10 @@ from typing import List
 
 from jinja2 import Environment, FileSystemLoader
 from slugify import slugify
+from markdown import Markdown
 
 from .utils import copy
+from .md_ext import BlockquotesPreprocessor
 
 
 THEME_PATH = Path(__file__).parent / "theme"
@@ -29,17 +31,42 @@ class Reading:
     title: str
     author: str
     read_on: datetime.datetime
-    notes: List[Note]
+    # notes: List[Note]
+    notes: str
     tags: list = field(default_factory=list)
     subtitle: str = ""
     url: str = ""
     isbn: str = ""
     cover: str = ""
+    type: str = "book"
 
     @staticmethod
     def load_from_yaml(filename):
         parsed = yaml.safe_load(filename.read_text())
         return Reading(**parsed)
+    
+    @staticmethod
+    def load_from_md(filename):
+        md = Markdown(extensions=['meta'])
+        md.preprocessors.register(BlockquotesPreprocessor(md), 'blockquotes', 10)
+        html = md.convert(filename.read_text())
+        
+        fields = Reading.__dataclass_fields__
+        def _parse(item):
+            field = fields.get(item)
+            if field.type == str:
+                return md.Meta.get(item, [field.default])[0]
+            elif field.type == list:
+                return md.Meta.get(item, [])
+            else:
+                return md.Meta.get(field, field.default)
+
+        kwargs = dict()
+        for field in fields.keys():
+            kwargs[field] = _parse(field)
+        kwargs['notes'] = html
+
+        return Reading(**kwargs)
 
     @property
     def slug(self):
@@ -57,10 +84,11 @@ class Reading:
 class Context:
     def __init__(self, readings):
         self.readings = readings
-        self.tags = defaultdict(list)
-        self.notes = []
+        # self.tags = defaultdict(list)
+        # self.notes = []
 
     def build(self):
+        return
         self.postprocess_readings()
         self.build_tags()
 
@@ -69,7 +97,6 @@ class Context:
             for note in reading.notes:
                 if "tags" not in note:
                     note["tags"] = []
-                note["tags"].extend(reading.tags)
                 note["reading"] = reading
 
     def build_notes(self):
@@ -111,8 +138,8 @@ class WebsiteGenerator:
             )
 
         # Tags
-        for tag, notes in self.context.tags.items():
-            self.render_template("tag.html", f"tags/{tag}.html", tag=tag, notes=notes)
+        # for tag, notes in self.context.tags.items():
+        #     self.render_template("tag.html", f"tags/{tag}.html", tag=tag, notes=notes)
 
     def copy_assets(self):
         copy(
@@ -134,9 +161,9 @@ class WebsiteGenerator:
 
         list(map(_create_path, paths))
 
-
 def process(path=".", output="output"):
-    readings = list(map(Reading.load_from_yaml, Path(path).glob("notes-*.yaml")))
+    
+    readings = list(map(Reading.load_from_md, Path(path).glob("notes-*.md")))
     ctx = Context(readings)
     ctx.build()
 

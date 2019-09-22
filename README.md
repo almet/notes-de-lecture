@@ -13,4 +13,4 @@ Voici comment l'installer :
 
 Puis, simplement :
 
-    readingnotes notes output && python3 http.server output
+    readingnotes notes output && python3 http.server --directory output
